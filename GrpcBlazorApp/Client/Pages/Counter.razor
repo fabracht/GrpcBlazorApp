@@ -1,0 +1,19 @@
+﻿@page "/counter"
+@using GrpcBlazorApp.Shared
+@inject CalculatorService.CalculatorServiceClient CalculatorServiceClient
+<h1>Counter</h1>
+
+<p>Current count: @currentCount</p>
+<p>Current Sum: @currentSum</p>
+
+<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+
+@code {
+    private int currentCount = 0;
+    private double currentSum = 0.0;
+    private async Task IncrementCount()
+    {
+        currentSum = (await CalculatorServiceClient.SumAsync(new SumRequest() {A = currentCount, B = currentSum})).Result;
+        currentCount++;
+    }
+}

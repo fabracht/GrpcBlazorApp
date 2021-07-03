@@ -1,0 +1,44 @@
+﻿@page "/"
+@using GrpcBlazorApp.Shared
+@using Grpc.Core
+@using System.Threading
+@inject CountService.CountServiceClient CountServiceClient
+
+<h1>Hello, world!</h1>
+
+Welcome to your new app.
+
+<Progress>
+    <ProgressBar Value="@((int)count.Last())"></ProgressBar>
+</Progress>
+
+The Count is currently @(count.Last())
+
+@code {
+
+    private IList<long> count = new List<long>() {0};
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await CountChanged();
+        count = result;
+    }
+
+
+    private async Task<IList<long>> CountChanged()
+    {
+        using (var source = new CancellationTokenSource())
+        {
+            var response = CountServiceClient.CountMultiple(new CountRequest() {StartFrom = 0}, cancellationToken: source.Token);
+            while (await response.ResponseStream.MoveNext())
+            {
+                Console.WriteLine(count.Last());
+                count.Add(response.ResponseStream.Current.Result);
+                StateHasChanged();
+            }
+        }
+
+        return count;
+    }
+
+}

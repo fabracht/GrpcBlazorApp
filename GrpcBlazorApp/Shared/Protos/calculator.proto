@@ -1,0 +1,18 @@
+syntax="proto3";
+
+package calculator;
+
+option csharp_namespace="GrpcBlazorApp.Shared";
+
+message SumRequest {
+  double a = 1;
+  double b = 2;
+}
+
+message SumResponse {
+  double result = 1;
+}
+
+service CalculatorService {
+  rpc Sum(SumRequest) returns (SumResponse) {}
+}

@@ -1,0 +1,16 @@
+syntax="proto3";
+
+package count;
+option csharp_namespace="GrpcBlazorApp.Shared";
+
+message CountRequest {
+  int64 startFrom = 1;
+}
+
+message CountMultipleResponse {
+  int64 result = 1;
+}
+
+service CountService {
+  rpc CountMultiple (CountRequest) returns (stream CountMultipleResponse) {}
+}
